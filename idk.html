@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello old friend | kingssw2 :D |</title>
+  <style>
+    body {
+      background-color: rgb(6,6,6);
+      margin: 0;
+      height: 100vh;
+      font-family: "Segoe UI", "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+      /* Exemplo de imagem de fundo: */
+      /* background-image: url('sua-imagem.jpg'); */
+      /* background-size: cover; background-position: center; */
+    }
+    #enter-remove {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #060707;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity .5s;
+    }
+    .begin {
+      color: #fff;
+      font-size: 32px;
+      font-family: monospace;
+      text-transform: uppercase;
+      text-shadow: 0 0 0.40em #fff;
+    }
+    #dox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .8s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #dox-bg-vid {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+      filter: brightness(0.5);
+      background: #000;
+    }
+    #dox-overlay {
+      position: relative;
+      z-index: 2;
+      color: white;
+      font-family: monospace;
+      font-size: 2vw;
+      padding: 2vw;
+      text-align: center;
+      max-width: 90vw;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      box-shadow: 0 0 40px #000;
+    }
+    #dox-overlay span {
+      margin: 0.5em 0;
+      display: block;
+    }
+  </style>
+  <script>
+    let msg1 = "Hello old friend | kingssw2 :D |";
+    const speed = 120;
+    function scrollTitle() {
+      document.title = msg1;
+      msg1 = msg1.substring(1) + msg1.charAt(0);
+      setTimeout(scrollTitle, speed);
+    }
+    scrollTitle();
+  </script>
+</head>
+<body>
+  <!-- Tela inicial -->
+  <div id="enter-remove">
+    <span class="begin">click to enter...</span>
+  </div>
+  <!-- Conteúdo dox -->
+  <div id="dox">
+    <video id="dox-bg-vid" loop autoplay playsinline preload="auto" src="Cooked Dog Meme.mp4"></video>
+    <div id="dox-overlay"></div>
+    <!-- Se quiser som de fundo:
+    <audio id="bg-audio" src="seu-audio.mp3" autoplay loop></audio>
+    -->
+  </div>
+
+  <script>
+    function formatDate(date) {
+      return date.toLocaleString('en-US', {hour12: false});
+    }
+    function getCookieEnabled() {
+      return navigator.cookieEnabled ? "Enabled" : "Disabled";
+    }
+    function getFingerprint() {
+      return btoa(
+        navigator.userAgent + navigator.language + screen.width + screen.height +
+        navigator.hardwareConcurrency + (navigator.platform || "")
+      ).substr(0, 32);
+    }
+    function getOS() {
+      let platform = navigator.platform || "Unknown";
+      if (platform.startsWith("Win")) return "Windows";
+      if (platform.startsWith("Mac")) return "MacOS";
+      if (platform.startsWith("Linux")) return "Linux";
+      if (platform.match(/Android/i)) return "Android";
+      if (platform.match(/iPhone|iPad|iPod/i)) return "iOS";
+      return platform;
+    }
+    async function displayInfo(label, value) {
+      const overlay = document.getElementById("dox-overlay");
+      const span = document.createElement("span");
+      span.innerText = `${label}: ${value}`;
+      overlay.appendChild(span);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    async function startDox() {
+      document.getElementById("enter-remove").style.opacity = "0";
+      setTimeout(() => {
+        document.getElementById("enter-remove").style.display = "none";
+      }, 400);
+      const dox = document.getElementById("dox");
+      dox.style.opacity = "1";
+      const vid = document.getElementById("dox-bg-vid");
+      vid.currentTime = 0;
+      vid.muted = false;
+      vid.volume = 1;
+      try { vid.play(); } catch(e){}
+      const overlay = document.getElementById("dox-overlay");
+      overlay.innerHTML = "";
+
+      try {
+        const ipData = await (await fetch("https://wtfismyip.com/json")).json();
+        await displayInfo("IP Address", ipData.YourFuckingIPAddress);
+        await displayInfo("Full Location", ipData.YourFuckingLocation);
+        const locationData = await (await fetch("https://we-are-jammin.xyz/json/" + ipData.YourFuckingIPAddress)).json();
+        await displayInfo("Country", locationData.country);
+        await displayInfo("Region", locationData.regionName);
+        await displayInfo("City", locationData.city);
+
+        await displayInfo("Current Time", formatDate(new Date()));
+        await displayInfo("Your Browser", navigator.userAgent);
+        await displayInfo("System OS", getOS());
+        await displayInfo("System Languages", navigator.languages.join(", "));
+        await displayInfo("Screen", `${screen.width} x ${screen.height}`);
+        await displayInfo("Window Size", `${window.innerWidth} x ${window.innerHeight}`);
+        await displayInfo("CPU Threads", navigator.hardwareConcurrency);
+        await displayInfo("Cookies", getCookieEnabled());
+        await displayInfo("Fingerprint", getFingerprint());
+        await displayInfo("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+        await displayInfo("Online Status", navigator.onLine ? "Online" : "Offline");
+        await displayInfo("Color Depth", screen.colorDepth + " bits");
+        await displayInfo("Pixel Depth", screen.pixelDepth + " bits");
+
+        // GPU Info (opcional)
+        const canvas = document.createElement("canvas");
+        let gl, debugInfo;
+        try {
+          gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+          debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        } catch (_) {}
+        if (gl && debugInfo) {
+          await displayInfo("GPU Vendor", gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+          await displayInfo("GPU Info", gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
+        }
+      } catch(e) {
+        await displayInfo("Error", "Could not fetch IP data.");
+      }
+
+      // Infos extras fictícias/brincadeira
+      await displayInfo("Camera Detected", (navigator.mediaDevices ? "Yes" : "No"));
+      await displayInfo("Microphone Detected", (navigator.mediaDevices ? "Yes" : "No"));
+      await displayInfo("Mouse Position", "Tracking...");
+      await displayInfo("Last Key Pressed", "Listening...");
+      await displayInfo("Your device is being monitored", "✔️");
+    }
+    document.getElementById("enter-remove").addEventListener("click", startDox);
+    document.getElementById("enter-remove").addEventListener("touchstart", startDox);
+  </script>
+</body>
+</html>
